@@ -3,41 +3,38 @@ name: Build and Export
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the code
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Step 2: Set up .NET
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0' # Replace with the version required by the project
+        dotnet-version: '6.0'
 
-    # Step 3: Install dependencies
-    - name: Install dependencies
-      run: dotnet restore
+    - name: Restore dependencies
+      run: dotnet restore ArkSaveEditor.sln
+      working-directory: Ark-Save-Manager
 
-    # Step 4: Build the project
     - name: Build the project
-      run: dotnet build --configuration Release
+      run: dotnet build ArkSaveEditor.sln --configuration Release
+      working-directory: Ark-Save-Manager
 
-    # Step 5: Publish the project (optional, to produce a single-file executable)
     - name: Publish the project
-      run: dotnet publish --configuration Release --output ./output
+      run: dotnet publish ArkSaveEditor.sln --configuration Release --output ./output
+      working-directory: Ark-Save-Manager
 
-    # Step 6: Upload the artifact
     - name: Upload build artifact
       uses: actions/upload-artifact@v3
       with:
         name: Ark-Save-Manager
-        path: ./output
+        path: Ark-Save-Manager/output
